@@ -4,6 +4,7 @@ const app = express()
 const bodyParser = require("body-parser")
 const PORT = process.env.PORT || 4000
 const cors = require("cors")
+const db = require("./config/db")
 
 const whiteList = [
    'https://localhost:4001'
@@ -24,9 +25,16 @@ let corsOptions = {
 const postRoutes = require("./api/routes/post")
 
 // middleware
+app.use(cors(corsOptions))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:true}))
-app.use(cors(corsOptions))
+
+// sync db
+db.sequelize.sync({force:true}).then(() => {
+   // return db.sequelize.drop()
+}).catch((err) => {
+   console.error(err)
+})
 
 // Routes
 app.use("/post", postRoutes)
