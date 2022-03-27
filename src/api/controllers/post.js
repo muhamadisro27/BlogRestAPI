@@ -36,7 +36,7 @@ module.exports = {
          const post = {
             title ,
             description,
-            published
+            published : published ? published : false
          }
 
          await Post.create(post).then((data) => {
@@ -58,18 +58,45 @@ module.exports = {
      
    },
    getPost : async (req,res) => {
-      const {id} = req.params
+      try {
+         const {id} = req.params
 
-      const post = await Post.findOne({where : {
-         id
-      }})
-
-      res.json({
-         data : post
-      }).send()
+         const post = await Post.findOne({where : {
+            id
+         }})
+   
+         res.json({
+            data : post
+         }).send()
+      } catch (err) {
+         res.send(err)
+      }
+     
 
    },
    deletePost : async (req,res) => {
+         const {id} = req.params
+
+         await Post.destroy({
+            where : {
+               id
+           }
+         }).then((result) => {
+            if (result === 1) {
+               res.send({
+                  message : "Post was deleted succesfully"
+               })
+            } else {
+               res.send({
+                  message : "Can not deleted post with id = " + id
+               })
+            }
+         }).catch((err) => {
+            res.status(500).send({
+               message : err.message || `Can not delete post with id = ${id}`
+            })
+         })
+       
 
    }
 }
