@@ -74,6 +74,45 @@ module.exports = {
      
 
    },
+   updatePost : async (req,res) => {
+      const {id} = req.params
+
+      const {title,description, published} = req.body
+
+      if(!title) {
+         res.status(400).send({
+            message : "Title can not be empty!"
+         })
+      }
+      if(!description) {
+         res.status(400).send({
+            message : "Title can not be empty!"
+         })
+      }
+      if(!published) {
+         res.status(400).send({
+            message : "Title can not be empty!"
+         })
+      }
+
+      const post = {
+         title,description, published
+      }
+
+      await Post.update(post, {
+         where : {id}
+      }).then(() => {
+         res.send({
+            status : "success",
+            message : `Post with id ${id} has been updated!`,
+         },200)
+      }).catch((err) => {
+         res.status(500).send({
+            status : "failed",
+            message : err.message || `Post with id ${id} fail to update!`
+         })
+      })
+   },
    deletePost : async (req,res) => {
          const {id} = req.params
 
