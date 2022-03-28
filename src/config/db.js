@@ -18,6 +18,8 @@ const db = {
    sequelize
 }
 
+db.user = require("../api/models/user")(sequelize,Sequelize)
+db.profile = require("../api/models/profile")(sequelize,Sequelize)
 db.post = require("../api/models/post")(sequelize,Sequelize)
 
 module.exports = db
