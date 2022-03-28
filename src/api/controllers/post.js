@@ -1,13 +1,14 @@
-const db = require("../../config/db")
-const Post = db.post
+const PostService = require("../services/post") 
 
 module.exports = {
    getPosts : async (req,res) => {
       try {
-         const post = await Post.findAll()
-         res.json({
+         const service = new PostService(req)
+         const posts = await service.getPosts()
+
+         res.send({
             "message" : "Get all posts",
-            "data" : post,
+            "data" : posts,
          })
       } catch (error) {
          console.error(error)
@@ -110,6 +111,19 @@ module.exports = {
          res.status(500).send({
             status : "failed",
             message : err.message || `Post with id ${id} fail to update!`
+         })
+      })
+   },
+   updatePublishPost : async (req,res) => {
+      const {id} = req.params
+
+      await Post.update({published : req.body.published},{where : {id}}).then(() => {
+         res.send({
+            message : `Data with id ${id} has been publish!`
+         }).catch((err) => {
+            res.status(500).send({
+               message : err.message || `Data with id ${id} fail to publish!`
+            })
          })
       })
    },
