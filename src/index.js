@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({extended:true}))
 
 
 // sync db
-db.sequelize.sync()
+
 
 // Routes
 app.use("/post", postRoutes)
@@ -48,8 +48,10 @@ app.use("/", (req,res) => {
 })
 
 
+db.sequelize.sync({force:true}).then(() => {
+   console.log("Database Connected")
+   app.listen(PORT, () => {
+      console.log(`Server running on https://localhost:${PORT}`)
+   })
+}).catch((err) => console.log(err))
 
-
-app.listen(PORT, () => {
-   console.log(`Server running on https://localhost:${PORT}`)
-})
